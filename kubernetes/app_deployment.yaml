@@ -23,7 +23,7 @@ spec:
             matchLabels:
               app.kubernetes.io/name: kube-learning
       containers:
-        - name: kube_learning
+        - name: kube-learning
           # Replace with your pushed image before applying this manifest.
           image: consultomer/kube-learning:1.0.1
           imagePullPolicy: Always
