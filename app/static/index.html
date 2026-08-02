@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Kubernetes Learning Lab</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <main class="shell">
+      <header class="hero">
+        <div>
+          <p class="eyebrow">FastAPI × Kubernetes</p>
+          <h1>Kubernetes Learning Lab</h1>
+          <p class="subhead">Inspect the cluster, then make its networking behavior visible.</p>
+        </div>
+        <div class="status" id="api-status">Loading cluster access…</div>
+      </header>
+
+      <section class="identity-grid" aria-label="This running replica">
+        <article><span>Cluster</span><strong id="cluster-name">—</strong></article>
+        <article><span>This Pod</span><strong id="pod-name">—</strong></article>
+        <article><span>Node</span><strong id="node-name">—</strong></article>
+        <article><span>Pod IP</span><strong id="pod-ip">—</strong></article>
+      </section>
+
+      <section class="summary-grid" aria-label="Cluster summary">
+        <article><span>Nodes</span><strong id="node-count">—</strong></article>
+        <article><span>Pods here</span><strong id="pod-count">—</strong></article>
+        <article><span>Services here</span><strong id="service-count">—</strong></article>
+        <article><span>Namespaces</span><strong id="namespace-count">—</strong></article>
+      </section>
+
+      <section class="labs">
+        <article class="lab-card">
+          <p class="eyebrow">Experiment 01</p>
+          <h2>Service load balancing</h2>
+          <p>The app sends 12 fresh requests through its own ClusterIP Service and reports which replica handled each one.</p>
+          <button id="load-balance-button">Run load-balance experiment</button>
+          <pre id="load-balance-output">Awaiting experiment.</pre>
+        </article>
+        <article class="lab-card">
+          <p class="eyebrow">Experiment 02</p>
+          <h2>Replica-local rate limiting</h2>
+          <p id="rate-limit-description">Make requests to see the counter. Watch the serving Pod change as the Service routes calls.</p>
+          <button id="rate-limit-button">Make one rate-limited request</button>
+          <pre id="rate-limit-output">Awaiting request.</pre>
+        </article>
+      </section>
+
+      <section class="data-section">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Live cluster view</p>
+            <h2>Nodes, Pods, Services, and Namespaces</h2>
+          </div>
+          <button class="secondary" id="refresh-button">Refresh now</button>
+        </div>
+        <div class="tables">
+          <article><h3>Nodes</h3><div id="nodes-table"></div></article>
+          <article><h3>Pods in this namespace</h3><div id="pods-table"></div></article>
+          <article><h3>Services in this namespace</h3><div id="services-table"></div></article>
+          <article><h3>Namespaces</h3><div id="namespaces-list" class="namespace-list"></div></article>
+        </div>
+      </section>
+    </main>
+    <script src="/static/app.js"></script>
+  </body>
+</html>
