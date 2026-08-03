@@ -32,7 +32,6 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/* Immutable labels used by the Deployment and Service selectors. */}}
 {{- define "kube-learning.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "kube-learning.name" . }}
-app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/* Service account name, whether it is created by this chart or supplied externally. */}}

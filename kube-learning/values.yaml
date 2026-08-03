@@ -218,4 +218,3 @@ topologySpreadConstraints:
     labelSelector:
       matchLabels:
         app.kubernetes.io/name: '{{ include "kube-learning.name" . }}'
-        app.kubernetes.io/instance: '{{ .Release.Name }}'
