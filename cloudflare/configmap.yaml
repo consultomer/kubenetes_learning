@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cloudflared-config
+  labels:
+    app: cloudflared
+data:
+  config.yaml: |
+    ingress:
+      - hostname: kube.maloomatech.com
+        service: http://kube-learning.myappp.svc.cluster.local:8000
+      - service: http_status:404
