@@ -1,0 +1,13 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: my-app-monitor
+  labels:
+    release: prometheus # This label must match the selector in your Prometheus resource
+spec:
+  selector:
+    matchLabels:
+      app: kube-learning
+  podMetricsEndpoints:
+  - port: http-metrics # The name of the port in your Pod spec
+    path: /metrics
