@@ -10,3 +10,7 @@ data:
       - hostname: kube.maloomatech.com
         service: http://kube-learning.myappp.svc.cluster.local:8000
       - service: http_status:404
+    ingress_grafana:
+      - hostname: kube.maloomatech.com
+        service: http://grafana.monitoring.svc.cluster.local:3000
+      - service: http_status:404

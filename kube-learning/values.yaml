@@ -11,7 +11,7 @@ image:
   # This sets the pull policy for images.
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "1.0.4"
+  tag: "1.0.5"
 
 # This is for the secrets for pulling an image from a private repository more information can be found here: https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
@@ -204,6 +204,8 @@ env:
         fieldPath: spec.nodeName
   - name: CLUSTER_NAME
     value: maloomatech.local
+  - name: APP_VERSION
+    value: "{{ .Values.image.tag | default .Chart.AppVersion }}"
   - name: SELF_SERVICE_URL
     value: "http://{{ include \"kube-learning.fullname\" . }}"
   - name: RATE_LIMIT_REQUESTS

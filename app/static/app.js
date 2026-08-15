@@ -29,6 +29,7 @@ async function refreshOverview() {
   if (!response.ok) throw new Error(`Dashboard request failed (${response.status})`);
   const data = await response.json();
   const identity = data.identity;
+  byId("app-version").textContent = `v${identity.app_version}`;
   byId("cluster-name").textContent = identity.cluster_name;
   byId("pod-name").textContent = identity.pod_name;
   byId("node-name").textContent = identity.node_name;

@@ -31,6 +31,7 @@ class Settings:
     pod_ip = os.getenv("POD_IP", "unknown")
     node_name = os.getenv("NODE_NAME", "local-machine")
     cluster_name = os.getenv("CLUSTER_NAME", "training-cluster")
+    app_version = os.getenv("APP_VERSION", "dev")
     self_service_url = os.getenv("SELF_SERVICE_URL", "").rstrip("/")
     rate_limit_requests = int(os.getenv("RATE_LIMIT_REQUESTS", "8"))
     rate_limit_window_seconds = int(os.getenv("RATE_LIMIT_WINDOW_SECONDS", "30"))
@@ -119,6 +120,7 @@ def current_identity() -> dict[str, str]:
         "pod_ip": settings.pod_ip,
         "node_name": settings.node_name,
         "cluster_name": settings.cluster_name,
+        "app_version": settings.app_version,
     }
 
 
@@ -214,7 +216,7 @@ async def lifespan(application: FastAPI):
 app = FastAPI(
     title="Kubernetes Learning Lab",
     description="A hands-on dashboard for exploring Pods, Nodes, Services, load balancing, and rate limiting.",
-    version="1.0.0",
+    version=settings.app_version,
     lifespan=lifespan,
 )
 app.mount("/static", StaticFiles(directory=APP_DIRECTORY / "static"), name="static")
