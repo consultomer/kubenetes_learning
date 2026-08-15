@@ -35,8 +35,37 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: {{ include "kube-learning.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
   name: {{ include "kube-learning.fullname" . }}-read
+---
+# Nodes and Namespaces are cluster-scoped resources, so a namespaced Role
+# cannot grant access to them — a ClusterRole/ClusterRoleBinding is required.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "kube-learning.fullname" . }}-{{ .Release.Namespace }}-cluster-read
+  labels:
+    {{- include "kube-learning.labels" . | nindent 4 }}
+rules:
+  - apiGroups: [""]
+    resources: ["nodes", "namespaces"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "kube-learning.fullname" . }}-{{ .Release.Namespace }}-cluster-read
+  labels:
+    {{- include "kube-learning.labels" . | nindent 4 }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "kube-learning.serviceAccountName" . }}
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "kube-learning.fullname" . }}-{{ .Release.Namespace }}-cluster-read
 {{- end }}

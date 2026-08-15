@@ -7,7 +7,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: kube-learning
+      app.kubernetes.io/name: kube-learning
   podMetricsEndpoints:
-  - port: http-metrics # The name of the port in your Pod spec
+  - port: http # Matches the "http" containerPort name in the Deployment
     path: /metrics

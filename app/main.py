@@ -17,6 +17,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from kubernetes import client, config
 from kubernetes.config.config_exception import ConfigException
+from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
 
 
 APP_DIRECTORY = Path(__file__).resolve().parent
@@ -69,6 +70,28 @@ rate_limiter = SlidingWindowRateLimiter(
     limit=settings.rate_limit_requests,
     window_seconds=settings.rate_limit_window_seconds,
 )
+
+REQUEST_COUNT = Counter(
+    "http_requests_total",
+    "Total HTTP requests handled by this replica.",
+    ["method", "path", "status"],
+)
+REQUEST_LATENCY = Histogram(
+    "http_request_duration_seconds",
+    "HTTP request latency in seconds.",
+    ["method", "path"],
+)
+POD_INFO = Gauge(
+    "kube_learning_pod_info",
+    "Static identity of the replica serving metrics (always 1).",
+    ["pod_name", "namespace", "node_name", "cluster_name"],
+)
+POD_INFO.labels(
+    pod_name=settings.pod_name,
+    namespace=settings.pod_namespace,
+    node_name=settings.node_name,
+    cluster_name=settings.cluster_name,
+).set(1)
 
 
 def running_in_kubernetes() -> tuple[client.CoreV1Api | None, str | None]:
@@ -197,6 +220,17 @@ app = FastAPI(
 app.mount("/static", StaticFiles(directory=APP_DIRECTORY / "static"), name="static")
 
 
+@app.middleware("http")
+async def record_request_metrics(request: Request, call_next):
+    start = time.perf_counter()
+    response = await call_next(request)
+    duration = time.perf_counter() - start
+    path = request.url.path
+    REQUEST_COUNT.labels(request.method, path, response.status_code).inc()
+    REQUEST_LATENCY.labels(request.method, path).observe(duration)
+    return response
+
+
 @app.get("/", include_in_schema=False)
 async def home() -> FileResponse:
     return FileResponse(APP_DIRECTORY / "static" / "index.html")
@@ -205,6 +239,11 @@ async def home() -> FileResponse:
 @app.get("/healthz", tags=["Operations"])
 async def healthz() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/metrics", tags=["Operations"], include_in_schema=False)
+async def metrics() -> Response:
+    return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
 
 
 @app.get("/api/overview", tags=["Cluster"])
