@@ -12,5 +12,5 @@ data:
       - service: http_status:404
     ingress_grafana:
       - hostname: gra.maloomatech.com
-        service: http://grafana.monitoring.svc.cluster.local:3000
+        service: http://grafana.monitoring.svc.cluster.local:80
       - service: http_status:404
