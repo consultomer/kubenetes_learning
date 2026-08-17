@@ -11,4 +11,6 @@ data:
         service: http://kube-learning.myappp.svc.cluster.local:8000
       - hostname: gra.maloomatech.com
         service: http://kube-prometheus-stack-grafana.monitoring.svc.cluster.local:80
+      - hostname: argocd.maloomatech.com
+        service: http://argocd-server.argocd.svc.cluster.local:80
       - service: http_status:404
