@@ -30,15 +30,20 @@ Apple Silicon nodes. Replace `consultomer` if your Docker Hub namespace differs.
 docker buildx create --use
 docker buildx build \
   --platform linux/amd64,linux/arm64 \
-  --tag consultomer/kube-learning:1.0.1 \
+  --tag consultomer/kube-learning:1.0.5 \
   --push .
 
-kubectl apply -f kubernetes/kube-learning.yaml
+helm upgrade --install kube-learning ./kube-learning \
+  --namespace kube-learning --create-namespace \
+  --set service.type=NodePort \
+  --set service.nodePort=30080
 kubectl -n kube-learning rollout status deployment/kube-learning
 kubectl -n kube-learning get pods -o wide
 ```
 
-The manifest exposes the lab through NodePort `30080`. For the cluster in this
+The chart defaults to a `ClusterIP` Service; the `--set` flags above expose the
+lab through NodePort `30080`. If you push a different tag, also pass
+`--set image.tag=<tag>`. For the cluster in this
 workspace, open:
 
 ```text
@@ -97,5 +102,6 @@ The first command should return `yes`; the second should return `no`.
 ## Cleanup
 
 ```bash
-kubectl delete -f kubernetes/kube-learning.yaml
+helm uninstall kube-learning --namespace kube-learning
+kubectl delete namespace kube-learning
 ```
